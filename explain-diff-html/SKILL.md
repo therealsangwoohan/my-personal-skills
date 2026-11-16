@@ -11,7 +11,13 @@ It should have these sections:
 
 - Background: Explain the existing system relevant to this change. (You should broadly explore surrounding code for this.) We don't know how much the reader already knows, so include a deep background for beginners (note that it can be skipped if the reader is already familiar), and then a more narrow background directly relevant to the change.
 - Intuition: Explain the core intuition for the code change. The focus here is to explain the essence, not the full details. Use concrete examples with toy data. Use figures and diagrams liberally.
-- Code: Do a high-level walkthrough of the changes to the code. Group/order the changes in an understandable way.
+- Code: Do a high-level walkthrough of the changes to the code, ordered like a tree: trunk changes first, then leaf changes.
+  - Trunk code is code with a high blast radius: core infrastructure, entry points, shared abstractions and utilities, public interfaces, data models and migrations, configuration, and anything many other parts of the system depend on. A mistake here breaks things far away, so it needs deep, manual review.
+  - Leaf code is isolated: a single component, page, script, or test whose failure stays local and that automated validation (tests, types, linters) can largely cover.
+  - Classify each changed area by how much depends on it, not by file location. Check its callers or importers when it isn't obvious.
+  - Split the walkthrough into two visibly labelled parts, "Trunk changes" and "Leaf changes", and mirror that split in the table of contents. Within each part, group/order the changes in an understandable way.
+  - Spend most of the depth on the trunk: what it changes, who depends on it, and what could break downstream. Point out what a reviewer should check by hand. Leaf changes can be covered more briefly, noting how they build on the trunk changes and what tests or checks validate them.
+  - If the diff has no trunk changes (or no leaf changes), say so in one line and skip that part.
 - Final Quiz: Come up with five questions that test the reader's knowledge of this PR. This should be medium difficulty, difficult enough that you actually need to understand the substance of the PR to answer them, but not gotchas. The goal is to help the reader make sure that they've actually understood.
 
 Quizzes:
